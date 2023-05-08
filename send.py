@@ -6,8 +6,8 @@ QUEUE: str = 'hello'
 EXCHANGE: str = ''
 ROUTING_KEY: str = 'hello'
 
-MESSAGE: str = 'Hello World!'
-LOG: str = " [x] Enviado '{}'"
+MESSAGE: str = 'Hello, World!'
+LOG: str = "[x] Enviado '{}'"
 
 
 def main() -> None:

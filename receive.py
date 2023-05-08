@@ -5,8 +5,8 @@ HOST: str = 'localhost'
 
 QUEUE: str = 'hello'
 
-WAITING: str = ' [*] Aguardando mensagens. Para sair aperte CTRL+C'
-RECIEVED: str = ' [x] Recebido {}'
+WAITING: str = '[*] Aguardando mensagens. Para sair aperte CTRL+C'
+RECIEVED: str = "[x] Recebido '{}'"
 SHUTDOWN: str = 'Desligando...'
 
 
