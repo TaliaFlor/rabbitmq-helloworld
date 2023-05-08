@@ -10,7 +10,7 @@ RECIEVED: str = "[x] Recebido '{}'"
 SHUTDOWN: str = 'Desligando...'
 
 
-def on_message_received(ch, method, properties, body):
+def on_message_received(ch, method, properties, body) -> None:
     print(RECIEVED.format(body))
 
 

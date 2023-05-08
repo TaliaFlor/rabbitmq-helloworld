@@ -1,16 +1,28 @@
 # RabbitMQ
 
-Exemplo de uso do RabbitMQ. Inspirado no [exemplo](https://www.rabbitmq.com/tutorials/tutorial-one-python.html) da
-documentação oficial.
+Exemplos de uso do RabbitMQ. Inspirado nos
+tutoriais [Hello World](https://www.rabbitmq.com/tutorials/tutorial-one-python.html)
+e [RPC](https://www.rabbitmq.com/tutorials/tutorial-six-python.html) da documentação oficial.
 
 # Uso
 
-1. Instale e configure o RabbitMQ na sua máquina com a fila `hello` e routing key `hello`
+1. Instale o RabbitMQ na sua máquina
 2. Instale as dependências do `requirements.txt`
-3. Em um terminal rode `python send.py`
-4. Em outro terminal rode `python recieve.py`
 
-Para mandar outra mensagem, basta rodar `python send.py` novamente no mesmo terminal ou em outro (se em outro, um novo
-produtor é criado). A mensagem pode ser modificada ao alterar a constante `MESSAGE` no arquivo `send.py`.
+## Hello World
 
-Para criar um novo consumidor, basta abrir outro terminal e executar `python recieve.py` novamente. 
+1. Configure o RabbitMQ a fila `hello` e a routing key `hello`
+2. Em um terminal rode `python hello_world/send.py`
+3. Em outro terminal rode `python hello_world/recieve.py`
+
+Para mandar outra mensagem, basta modificar a constante `MESSAGE` no arquivo `hello_world/send.py` e
+executar `python hello_world/send.py` novamente.
+
+## RPC
+
+1. Configure o RabbitMQ a fila `rpc_queue`
+2. Em um terminal rode `python rpc/server.py`
+3. Em outro terminal rode `python rpc/client.py`
+
+Para solicitar outra sequência, basta modificar a constante `FIBONACCI_NUM` no arquivo `rpc/client.py` e
+executar `python rpc/client.py` novamente.
