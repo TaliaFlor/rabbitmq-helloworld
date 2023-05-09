@@ -13,7 +13,7 @@ FIBONACCI_NUM: int = 30
 
 CORRELATION_ID: str = str(uuid.uuid4())
 
-REQUEST: str = "[x] Solicitando sequência Fibonacci de '{}'"
+REQUEST: str = "[x] Solicitado sequência Fibonacci de '{}'"
 RESPONSE: str = "[.] Sequência recebida '{}'"
 
 
@@ -35,16 +35,16 @@ def main() -> None:
     channel: BlockingChannel = connection.channel()
 
     queue_frame = channel.queue_declare(queue='', exclusive=True)
-    callback_queue: str = queue_frame.method.queue
+    response_queue: str = queue_frame.method.queue
 
-    channel.basic_consume(queue=callback_queue, on_message_callback=on_response, auto_ack=True)
+    channel.basic_consume(queue=response_queue, on_message_callback=on_response, auto_ack=True)
 
-    print(REQUEST.format(FIBONACCI_NUM))
     channel.basic_publish(exchange='',
                           routing_key=config.routing_key,
-                          properties=BasicProperties(reply_to=callback_queue, correlation_id=CORRELATION_ID),
+                          properties=BasicProperties(reply_to=response_queue, correlation_id=CORRELATION_ID),
                           body=str(FIBONACCI_NUM).encode())
     connection.process_data_events(time_limit=None)
+    print(REQUEST.format(FIBONACCI_NUM))
 
 
 if __name__ == '__main__':
