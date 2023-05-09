@@ -5,13 +5,9 @@ from pika.adapters.blocking_connection import BlockingChannel
 from pika.channel import Channel
 from pika.spec import Basic, BasicProperties
 
-HOST: str = 'localhost'
+from rpc.config import RabbitMQConfig, read_config
 
-QUEUE: str = 'rpc_queue'
-EXCHANGE: str = ''
-
-SEPARATOR: str = ' '
-ENCODING: str = 'utf-8'
+CONFIG_FILE: str = './config.json'
 
 WAITING: str = '[x] Aguardando solicitações de RPC...'
 REQUEST: str = '[.] Fibonacci de {} - {}'
@@ -35,7 +31,7 @@ def fibonacci_sequence(num: int) -> list[int]:
 
 
 def to_str(nums: list[int]) -> str:
-    return SEPARATOR.join(map(str, nums))
+    return ' '.join(map(str, nums))
 
 
 def on_request(channel: Channel, method: Basic.Deliver, properties: BasicProperties, body: bytes) -> None:
@@ -43,21 +39,23 @@ def on_request(channel: Channel, method: Basic.Deliver, properties: BasicPropert
     sequence: list[int] = fibonacci_sequence(num)
     print(REQUEST.format(num, sequence))
 
-    channel.basic_publish(exchange=EXCHANGE,
+    channel.basic_publish(exchange='',
                           routing_key=properties.reply_to,
                           properties=BasicProperties(correlation_id=properties.correlation_id),
-                          body=to_str(sequence).encode(ENCODING))
+                          body=to_str(sequence).encode())
     channel.basic_ack(delivery_tag=method.delivery_tag)
 
 
 def main() -> None:
-    connection = BlockingConnection(ConnectionParameters(host=HOST))
+    config: RabbitMQConfig = read_config(CONFIG_FILE)
+
+    connection = BlockingConnection(ConnectionParameters(host=config.host))
     channel: BlockingChannel = connection.channel()
 
-    channel.queue_declare(queue=QUEUE)
+    channel.queue_declare(queue=config.queue)
 
     channel.basic_qos(prefetch_count=1)
-    channel.basic_consume(queue=QUEUE, on_message_callback=on_request)
+    channel.basic_consume(queue=config.queue, on_message_callback=on_request)
 
     print(WAITING)
     channel.start_consuming()

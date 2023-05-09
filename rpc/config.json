@@ -1,0 +1,5 @@
+{
+  "host": "localhost",
+  "queue": "rpc_queue",
+  "routing_key": "rpc_queue"
+}

@@ -1,0 +1,5 @@
+{
+  "host": "localhost",
+  "queue": "hello",
+  "routing_key": "hello"
+}
