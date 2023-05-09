@@ -12,8 +12,8 @@ e [RPC](https://www.rabbitmq.com/tutorials/tutorial-six-python.html) da document
 ## Hello World
 
 1. Configure o RabbitMQ a fila `hello` e a routing key `hello`
-2. Em um terminal rode `python hello_world/send.py`
-3. Em outro terminal rode `python hello_world/recieve.py`
+2. Em um terminal rode `python hello_world/recieve.py`
+3. Em outro terminal rode `python hello_world/send.py`
 
 Para mandar outra mensagem, basta modificar a constante `MESSAGE` no arquivo `hello_world/send.py` e
 executar `python hello_world/send.py` novamente.

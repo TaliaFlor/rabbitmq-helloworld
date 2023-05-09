@@ -1,6 +1,9 @@
 import sys
 
-import pika
+from pika import BlockingConnection, ConnectionParameters
+from pika.adapters.blocking_connection import BlockingChannel
+from pika.channel import Channel
+from pika.spec import Basic, BasicProperties
 
 HOST: str = 'localhost'
 
@@ -8,6 +11,7 @@ QUEUE: str = 'rpc_queue'
 EXCHANGE: str = ''
 
 SEPARATOR: str = ' '
+ENCODING: str = 'utf-8'
 
 WAITING: str = '[x] Aguardando solicitações de RPC...'
 REQUEST: str = '[.] Fibonacci de {} - {}'
@@ -34,21 +38,21 @@ def to_str(nums: list[int]) -> str:
     return SEPARATOR.join(map(str, nums))
 
 
-def on_request(ch, method, props, body) -> None:
+def on_request(channel: Channel, method: Basic.Deliver, properties: BasicProperties, body: bytes) -> None:
     num = int(body)
     sequence: list[int] = fibonacci_sequence(num)
     print(REQUEST.format(num, sequence))
 
-    ch.basic_publish(exchange=EXCHANGE,
-                     routing_key=props.reply_to,
-                     properties=pika.BasicProperties(correlation_id=props.correlation_id),
-                     body=to_str(sequence))
-    ch.basic_ack(delivery_tag=method.delivery_tag)
+    channel.basic_publish(exchange=EXCHANGE,
+                          routing_key=properties.reply_to,
+                          properties=BasicProperties(correlation_id=properties.correlation_id),
+                          body=to_str(sequence).encode(ENCODING))
+    channel.basic_ack(delivery_tag=method.delivery_tag)
 
 
 def main() -> None:
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host=HOST))
-    channel = connection.channel()
+    connection = BlockingConnection(ConnectionParameters(host=HOST))
+    channel: BlockingChannel = connection.channel()
 
     channel.queue_declare(queue=QUEUE)
 
